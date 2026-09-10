@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+/* Fonts are bundled, not fetched (offline-first). Drop woff2 files into
+ *  src/assets/fonts/ — vite-plugin-singlefile inlines them at build.
+ *  Missing files fall back to system serif/sans gracefully. */
+@font-face { font-family: 'Cinzel'; src: url('./assets/fonts/Cinzel-Variable.woff2') format('woff2'); font-weight: 400 900; font-display: swap; }
+@font-face { font-family: 'Inter';   src: url('./assets/fonts/Inter-Variable.woff2') format('woff2'); font-weight: 100 900; font-display: swap; }
+
+/* ── Theme contract ──────────────────────────────────────────────────
+ *  --house-* is the app's entire theming surface. App.tsx sets
+ *  data-house on <html> from the active profile; any element wanting a
+ *  local palette (SortingHat preview cards) sets it on itself — the
+ *  cascade does the rest.                                                */
+:root, [data-house='neutral'] {
+    --bg: #120e18;  --panel: #1a1614;  --panel-edge: #3a3228;
+    --text: #e8e2d4;  --muted: #9a917d;  --gold: #c9a227;
+    --house-primary: #2a251c;  --house-accent: #c9a227;
+    --house-on-accent: #14100e;  --house-glow: rgb(180 120 255 / .14);
+}
+[data-house='gryffindor'] { --house-primary: #740001; --house-accent: #d3a625; --house-on-accent: #1b1b1b; --house-glow: rgb(211 166 37 / .06); }
+[data-house='slytherin']  { --house-primary: #0d4f2b; --house-accent: #9fb4a5; --house-on-accent: #101410; --house-glow: rgb(159 180 165 / .05); }
+[data-house='ravenclaw']  { --house-primary: #0e1a40; --house-accent: #9c6d30; --house-on-accent: #14100a; --house-glow: rgb(156 109 48 / .06); }
+[data-house='hufflepuff'] { --house-primary: #3d2e0a; --house-accent: #ecb939; --house-on-accent: #1b1b1b; --house-glow: rgb(236 185 57 / .06); }
+/* Hufflepuff: canonical black-on-yellow inverts on a dark UI, so primary
+ *  deepens to amber-brown and canary takes the accent role. */
+
+.font-display { font-family: 'Cinzel', 'Times New Roman', serif; }
+body { font-family: 'Inter', system-ui, sans-serif; }
+
+/* Ancient-magic shimmer — RS3 aurora's cousin, re-tinted per house via
+ *  --house-glow. Transform/opacity only: compositor-cheap. */
+.candle-glow {
+    position: relative;
+    overflow: hidden;
+}
+.candle-glow::before {
+    content: '';
+    position: fixed;
+    inset: -20%;
+    pointer-events: none;
+    z-index: 0;
+    background:
+    radial-gradient(38rem 24rem at 18% -8%, var(--house-glow), transparent 62%),
+    radial-gradient(32rem 22rem at 88% 110%, rgb(201 162 39 / .10), transparent 60%);
+    animation: drift 14s ease-in-out infinite alternate;
+}
+@keyframes drift {
+    from { transform: translate3d(0, 0, 0) scale(1); opacity: .7; }
+    to   { transform: translate3d(2.5rem, -1.5rem, 0) scale(1.08); opacity: 1; }
+}
